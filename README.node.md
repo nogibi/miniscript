@@ -6,12 +6,13 @@ Build the single-file Node.js CLI with Emscripten:
 make miniscript-node.js
 ```
 
-Run it with either command:
+Run it directly:
 
 ```sh
-node miniscript.js compile 'and(pk(A),older(1000))'
-node miniscript.js analyze 'and_v(v:pk(A),older(1000))'
-node miniscript.js help
+chmod +x miniscript.js
+./miniscript.js compile 'and(pk(A),older(1000))'
+./miniscript.js analyze 'and_v(v:pk(A),older(1000))'
+./miniscript.js help
 ```
 
 `compile` and `analyze` show the original web output as command-line text.

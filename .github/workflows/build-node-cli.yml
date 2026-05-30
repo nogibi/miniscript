@@ -26,8 +26,8 @@ jobs:
 
       - name: Smoke test build Node runtime
         run: |
-          node miniscript.js compile 'and(pk(A),older(1000))'
-          node miniscript.js analyze 'and_v(v:pk(A),older(1000))'
+          ./miniscript.js compile 'and(pk(A),older(1000))'
+          ./miniscript.js analyze 'and_v(v:pk(A),older(1000))'
 
       - name: Upload Node CLI artifact
         uses: actions/upload-artifact@v7

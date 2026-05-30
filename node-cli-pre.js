@@ -6,14 +6,15 @@ function printCompileHelp() {
   console.error("  and the resulting script structure.");
   console.error("");
   console.error("Usage:");
-  console.error("  node miniscript.js compile <policy>");
+  console.error("  ./miniscript.js compile <policy>");
   console.error("");
   console.error("Example:");
-  console.error("  node miniscript.js compile 'and(pk(A),older(1000))'");
+  console.error("  ./miniscript.js compile 'and(pk(A),older(1000))'");
   console.error("");
   console.error("Supported policies:");
   console.error("  pk(NAME)                       Require public key NAME to sign; NAME can be up to 16 characters.");
-  console.error("  after(NUM), older(NUM)         Require nLockTime/nSequence to be at least NUM; NUM cannot be 0.");
+  console.error("  after(NUM), older(NUM)         Require nLockTime/nSequence to be at least NUM.");
+  console.error("                                  older(NUM): 1..65535 blocks, or 4194305..4259839 in 512-second units.");
   console.error("  sha256(HEX), hash256(HEX)      Require the preimage of 64-character HEX; H may be used as HEX.");
   console.error("  ripemd160(HEX), hash160(HEX)   Require the preimage of 40-character HEX; H may be used as HEX.");
   console.error("  and(POL,POL)                   Require both subpolicies.");
@@ -22,17 +23,17 @@ function printCompileHelp() {
   console.error("");
   console.error("Examples:");
   console.error("  A single key:");
-  console.error("    node miniscript.js compile 'pk(key_1)'");
+  console.error("    ./miniscript.js compile 'pk(key_1)'");
   console.error("  One of two keys (equally likely):");
-  console.error("    node miniscript.js compile 'or(pk(key_1),pk(key_2))'");
+  console.error("    ./miniscript.js compile 'or(pk(key_1),pk(key_2))'");
   console.error("  One of two keys (one likely, one unlikely):");
-  console.error("    node miniscript.js compile 'or(99@pk(key_likely),pk(key_unlikely))'");
+  console.error("    ./miniscript.js compile 'or(99@pk(key_likely),pk(key_unlikely))'");
   console.error("  A user and a 2FA service need to sign off, but after 90 days the user alone is enough:");
-  console.error("    node miniscript.js compile 'and(pk(key_user),or(99@pk(key_service),older(12960)))'");
+  console.error("    ./miniscript.js compile 'and(pk(key_user),or(99@pk(key_service),older(12960)))'");
   console.error("  A 3-of-3 that turns into a 2-of-3 after 90 days:");
-  console.error("    node miniscript.js compile 'thresh(3,pk(key_1),pk(key_2),pk(key_3),older(12960))'");
+  console.error("    ./miniscript.js compile 'thresh(3,pk(key_1),pk(key_2),pk(key_3),older(12960))'");
   console.error("  The BOLT #3 to_local policy:");
-  console.error("    node miniscript.js compile 'or(pk(key_revocation),and(pk(key_local),older(1008)))'");
+  console.error("    ./miniscript.js compile 'or(pk(key_revocation),and(pk(key_local),older(1008)))'");
 }
 
 function printAnalyzeHelp() {
@@ -41,10 +42,10 @@ function printAnalyzeHelp() {
   console.error("  max ops, max stack size, and the resulting script.");
   console.error("");
   console.error("Usage:");
-  console.error("  node miniscript.js analyze <miniscript>");
+  console.error("  ./miniscript.js analyze <miniscript>");
   console.error("");
   console.error("Example:");
-  console.error("  node miniscript.js analyze 'and_v(v:pk(A),older(1000))'");
+  console.error("  ./miniscript.js analyze 'and_v(v:pk(A),older(1000))'");
   console.error("  Provide a well-typed miniscript expression of type \"B\".");
 }
 
@@ -52,15 +53,15 @@ function printUsage() {
   console.error("Miniscript CLI");
   console.error("");
   console.error("Usage:");
-  console.error("  node miniscript.js <command> <expression>");
+  console.error("  ./miniscript.js <command> <expression>");
   console.error("");
   console.error("Commands:");
   console.error("  compile <policy>              Compile a policy to Miniscript.");
   console.error("  analyze <miniscript>          Analyze a well-typed Miniscript expression of type \"B\".");
   console.error("");
   console.error("Help:");
-  console.error("  node miniscript.js compile help");
-  console.error("  node miniscript.js analyze help");
+  console.error("  ./miniscript.js compile help");
+  console.error("  ./miniscript.js analyze help");
   console.error("");
   printCompileHelp();
   console.error("");
