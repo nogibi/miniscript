@@ -17,6 +17,14 @@ void Output(const std::string& str, char* out, int outlen) {
     out[maxlen] = 0;
 }
 
+bool HasInvalidBIP68Older(const miniscript::NodeRef<std::string>& node) {
+    if (node->fragment == miniscript::Fragment::OLDER && ((node->k & 0x0000ffffU) == 0 || (node->k & ~((1U << 22) | 0x0000ffffU)) != 0)) return true;
+    for (const auto& sub : node->subs) {
+        if (HasInvalidBIP68Older(sub)) return true;
+    }
+    return false;
+}
+
 std::string TypeString(const miniscript::NodeRef<std::string>& node) {
     if (node->GetType() == ""_mst) return "[invalid]";
 
@@ -169,6 +177,12 @@ void miniscript_compile(const char* desc, char* msout, int msoutlen, char* costo
             Output("[compile error]", asmout, asmoutlen);
             return;
         }
+        if (HasInvalidBIP68Older(ret)) {
+            Output("[compile error: invalid BIP68 sequence locktime]", msout, msoutlen);
+            Output("[compile error]", costout, costoutlen);
+            Output("[compile error]", asmout, asmoutlen);
+            return;
+        }
         Output(Abbreviate(*(ret->ToString(COMPILER_CTX))), msout, msoutlen);
         std::string coststr = "Script: " + std::to_string(ret->ScriptSize()) +
                               " WU\nInput: " + std::to_string(avgcost) +
@@ -190,6 +204,11 @@ void miniscript_analyze(const char* ms, char* costout, int costoutlen, char* asm
         ret = miniscript::FromString(Expand(str), COMPILER_CTX);
         if (!ret || !ret->IsValidTopLevel()) {
             Output("[analysis error]", costout, costoutlen);
+            Output("[analysis error]", asmout, asmoutlen);
+            return;
+        }
+        if (HasInvalidBIP68Older(ret)) {
+            Output("[analysis error: invalid BIP68 sequence locktime]", costout, costoutlen);
             Output("[analysis error]", asmout, asmoutlen);
             return;
         }
